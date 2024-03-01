@@ -1,15 +1,11 @@
 <?php
-namespace App;
 
-use Exception;
+namespace App;
 
 class Calc
 {
-    public function divide(float $dividend = 0.0, float $divider = 1.0): float
+    public function plus($a, $b)
     {
-        if ($divider == 0) {
-            throw new Exception('Деление на ноль.');
-        }
-        return $dividend / $divider;
+        return $a + $b;
     }
 }

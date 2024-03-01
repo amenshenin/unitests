@@ -1,15 +1,18 @@
 <?php
-use App\User;
+
 use App\Connection;
+use App\User;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
+    private $pdo;
     private $user;
  
     protected function setUp(): void
     {
-        $this->user = new User();
+        $this->pdo = $this->createMock(PDO::class);
+        $this->user = new User($this->pdo);
     }
  
     protected function tearDown(): void
@@ -23,7 +26,7 @@ class UserTest extends TestCase
                 1,
                 [
                     'user_id' => 1,
-                    'email'   => 'aa@aa.a',
+                    'email'   => 'test@test.test',
                     'age'     => 12,
                 ]
             ],
@@ -31,26 +34,24 @@ class UserTest extends TestCase
     }
 
     /**
-     * @dataProvider addDataProvider
-     */
-    public function testFind(int $user_id = 0, array $result = []): void
+    * @dataProvider addDataProvider
+    */
+    public function testFind($user_id, $result)
     {
-        $pdo_statment = $this->createMock(PDOStatement::class);
-        $pdo_statment->expects($this->any())
+        $pdo_statement = $this->createMock(PDOStatement::class);
+
+        $this->pdo->expects($this->any())
+            ->method('prepare')
+            ->will($this->returnValue($pdo_statement));
+
+        $pdo_statement->expects($this->any())
             ->method('execute');
-        $pdo_statment->expects($this->any())
+
+        $pdo_statement->expects($this->once())
             ->method('fetch')
             ->will($this->returnValue($result));
-        $pdo = $this->createMock(PDO::class);
-        $pdo->expects($this->any())
-            ->method('prepare')
-            ->will($this->returnValue($pdo_statment));
-        $connection = $this->createMock(Connection::class);
-        $connection->expects($this->any())
-            ->method('getInstance')
-            ->will($this->returnValue($pdo));
-        
+
         $user = $this->user->find($user_id);
-        $this->assertEquals($result['email'], $user->email);
+        $this->assertEquals($user->email, $result['email']);
     }
 }

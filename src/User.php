@@ -12,12 +12,9 @@ class User
     public $email = 0;
     public $age = 0;
 
-    public function __construct(int $user_id = 0)
+    public function __construct(PDO $db)
     {
-        $this->db = Connection::getInstance();
-        if (!empty($user_id)) {
-            $this->find($user_id);
-        }
+        $this->db = $db;
     }
 
     public function find(int $user_id = 0): ?self
