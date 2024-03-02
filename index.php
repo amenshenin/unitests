@@ -12,3 +12,4 @@ print_r(PHP_EOL);
 $user = new User(Connection::getInstance());
 $author = $user->find(1);
 print_r("User Id: {$author->user_id}" . PHP_EOL . "Email: {$author->email}" . PHP_EOL . "Age: {$author->age}" . PHP_EOL);
+print_r($user->add(['email' => 'test2@example.com', 'age' => 12]) . PHP_EOL);

@@ -32,4 +32,16 @@ class User
             return null;
         }
     }
+
+    public function add(array $user_data = []): ?int
+    {
+        if (empty($user_data['email']) || empty($user_data['age'])) {
+            return null;
+        }
+        $sth = $this->db->prepare('INSERT INTO users (email, age) VALUES (:email, :age)');
+        $sth->bindValue(':email', $user_data['email'], PDO::PARAM_STR);
+        $sth->bindValue(':age', $user_data['age'], PDO::PARAM_INT);
+        $sth->execute();
+        return $this->db->lastInsertId();
+    }
 }
